@@ -33,6 +33,7 @@ bl_info = {
 }
 
 import bpy
+import math
 
 class OP_Tracking_refine_solution(bpy.types.Operator):
     """Set track weight by error and solve camera motion"""
@@ -49,7 +50,10 @@ class OP_Tracking_refine_solution(bpy.types.Operator):
     def execute(self, context):
         for clip in bpy.data.movieclips:
             for track in clip.tracking.tracks:
-                track.weight = self.error/(track.average_error/track.weight)
+                if math.isnan(track.average_error):
+                    track.weight = 0
+                else:
+                    track.weight = self.error/(track.average_error/track.weight)
         bpy.ops.clip.solve_camera()
         return{'FINISHED'}
         
