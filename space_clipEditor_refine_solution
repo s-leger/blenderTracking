@@ -1,0 +1,99 @@
+# -*- coding:utf-8 -*-
+
+#  ***** GPL LICENSE BLOCK *****
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#  All rights reserved.
+#  ***** GPL LICENSE BLOCK *****
+
+bl_info = {
+    "name": "Refine tracking solution",
+    "author": "Stephen Leger",
+    "license": "GPL",
+    "version": (1, 0, 0),
+    "blender": (2, 7, 8),
+    "location": "Clip Editor > Tools > Solve > Refine Solution",
+    "description": "Refine motion solution by setting track weight according average error",
+    "warning": "",
+    "wiki_url": "https://github.com/s-leger/blenderTracking/wiki",
+    "tracker_url": "https://github.com/s-leger/blenderTracking/issues",
+    "support": "COMMUNITY",
+    "category": "Tools",
+}
+
+import bpy
+
+class OP_Tracking_refine_solution(bpy.types.Operator):
+    """Set track weight by error and solve camera motion"""
+    bl_idname = "tracking.refine_solution"  
+    bl_label = "Refine"
+    bl_options = {"UNDO"}
+    
+    error = bpy.props.FloatProperty(
+        name="Target error", 
+        description="Refine motion track target error", 
+        default=0.3, 
+        min=0.01)
+    
+    def execute(self, context):
+        for clip in bpy.data.movieclips:
+            for track in clip.tracking.tracks:
+                track.weight = self.error/(track.average_error/track.weight)
+        bpy.ops.clip.solve_camera()
+        return{'FINISHED'}
+        
+class OP_Tracking_reset_solution(bpy.types.Operator):
+    """Reset track weight and solve camera motion"""
+    bl_idname = "tracking.reset_solution"  
+    bl_label = "Reset"
+    bl_options = {"UNDO"}
+    
+    def execute(self, context):
+        for clip in bpy.data.movieclips:
+            for track in clip.tracking.tracks:
+                track.weight = 1.0
+        bpy.ops.clip.solve_camera()
+        return{'FINISHED'}
+
+class RefineMotionTrackingPanel(bpy.types.Panel):
+    bl_label = "Refine solution"
+    bl_space_type = "CLIP_EDITOR"
+    bl_region_type = "TOOLS"
+    bl_category = "Solve"
+    
+    def draw(self, context):
+        layout = self.layout
+        box = layout.box()
+        row = box.row(align=True)
+        row.label("Refine")
+        row = box.row(align=True)
+        row.prop(context.window_manager, "TrackingTargetError", text="Target error")
+        row = box.row(align=True)
+        row.operator("tracking.refine_solution").error = context.window_manager.TrackingTargetError
+        row.operator("tracking.reset_solution")
+  
+def register():
+    bpy.types.WindowManager.TrackingTargetError = bpy.props.FloatProperty(
+        name="error", 
+        description="Refine motion track target error", 
+        default=0.3, 
+        min=0.01)
+    bpy.utils.register_module(__name__)        
+        
+def unregister():
+    bpy.utils.unregister_module(__name__)   
+    del bpy.types.WindowManager.TrackingTargetError
+    
+if __name__ == "__main__":
+    register()
