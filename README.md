@@ -5,7 +5,7 @@ When solving for camera motion, narrowing down solve error by hand may be a real
 Setting track weight according reprojection error solve this issue for camera motion tracking.
 Here is a script to automatically set weight of all tracks according error in a single click.
 
-Basically this allow you to **choose the wanted solution error** and get it with a single click,
+Basically this allow you to **choose the wanted solution error** and get it within a single click,
 even with poor tracks (automatic detected feature).
 
 Perfect for automatically tracked movies, with many tracks. 
