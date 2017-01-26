@@ -47,13 +47,17 @@ class OP_Tracking_refine_solution(bpy.types.Operator):
         default=0.3, 
         min=0.01)
     
+    @classmethod
+    def poll(cls, context):
+        return (context.area.spaces.active.clip is not None)
+        
     def execute(self, context):
-        for clip in bpy.data.movieclips:
-            for track in clip.tracking.tracks:
-                if math.isnan(track.average_error):
-                    track.weight = 0
-                else:
-                    track.weight = self.error/(track.average_error/track.weight)
+        clip = context.area.spaces.active.clip
+        for track in clip.tracking.tracks:
+            if track.average_error == 0:
+                track.weight = 0
+            else:
+                track.weight = self.error/(track.average_error/track.weight)
         bpy.ops.clip.solve_camera()
         return{'FINISHED'}
         
@@ -63,10 +67,14 @@ class OP_Tracking_reset_solution(bpy.types.Operator):
     bl_label = "Reset"
     bl_options = {"UNDO"}
     
+    @classmethod
+    def poll(cls, context):
+        return (context.area.spaces.active.clip is not None)
+    
     def execute(self, context):
-        for clip in bpy.data.movieclips:
-            for track in clip.tracking.tracks:
-                track.weight = 1.0
+        clip = context.area.spaces.active.clip
+        for track in clip.tracking.tracks:
+            track.weight = 1.0
         bpy.ops.clip.solve_camera()
         return{'FINISHED'}
 
@@ -75,6 +83,10 @@ class RefineMotionTrackingPanel(bpy.types.Panel):
     bl_space_type = "CLIP_EDITOR"
     bl_region_type = "TOOLS"
     bl_category = "Solve"
+    
+    @classmethod
+    def poll(cls, context):
+        return (context.area.spaces.active.clip is not None) 
     
     def draw(self, context):
         layout = self.layout
