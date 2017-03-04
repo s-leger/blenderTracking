@@ -97,6 +97,10 @@ class OP_Tracking_refine_solution(bpy.types.Operator):
                     tw = 1.0
                     
                 reprojected_position = track.bundle * projection_matrix
+                if reprojected_position.z == 0:
+                    track.weight = 0
+                    track.keyframe_insert("weight", frame=frame)
+                    continue
                 reprojected_position = reprojected_position / -reprojected_position.z * tracking.camera.focal_length_pixels
                 reprojected_position = Vector((tracking.camera.principal[0] + reprojected_position[0],tracking.camera.principal[1] * aspy + reprojected_position[1], 0))
                 
