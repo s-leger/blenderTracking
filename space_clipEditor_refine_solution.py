@@ -21,7 +21,7 @@ bl_info = {
     "name": "Refine tracking solution",
     "author": "Stephen Leger",
     "license": "GPL",
-    "version": (1, 1, 0),
+    "version": (1, 1, 2),
     "blender": (2, 7, 8),
     "location": "Clip Editor > Tools > Solve > Refine Solution",
     "description": "Refine motion solution by setting track weight according reprojection error",
@@ -115,7 +115,7 @@ class OP_Tracking_refine_solution(bpy.types.Operator):
                 track.keyframe_insert("weight", frame=frame)
             
             
-        bpy.ops.clip.solve_camera()
+        bpy.ops.clip.solve_camera('INVOKE_DEFAULT')
         return{'FINISHED'}
         
 class OP_Tracking_reset_solution(bpy.types.Operator):
@@ -149,7 +149,7 @@ class OP_Tracking_reset_solution(bpy.types.Operator):
                     continue
                 track.weight = 1.0
                 track.keyframe_insert("weight", frame=frame)       
-        bpy.ops.clip.solve_camera()
+        bpy.ops.clip.solve_camera('INVOKE_DEFAULT')
         return{'FINISHED'}
 
 class RefineMotionTrackingPanel(bpy.types.Panel):
@@ -195,5 +195,3 @@ def unregister():
     
 if __name__ == "__main__":
     register()
-    
-    
