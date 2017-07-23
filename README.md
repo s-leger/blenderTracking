@@ -19,6 +19,8 @@ Perfect for automatically tracked movies, with many tracks.
 
 ## Usage:
 
+![Ui](https://github.com/s-leger/images/blob/master/refine.png)  
+
 * Start to Solve your motion as usually
 * Choose your target solution error, eg: 0.3 
 * Refine your camera motion path solution.
