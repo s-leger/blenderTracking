@@ -14,7 +14,7 @@ Perfect for automatically tracked movies, with many tracks.
 
 ## Installation:
 
-* Setup the plugin as usual
+* This addon is part of 2.79 / 2.8 release, you only must enable in addon preferences.
 * Find it under movie clip -> Tools -> Solve -> Refine solution.
 
 ## Usage:
