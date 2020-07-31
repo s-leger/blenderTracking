@@ -1,7 +1,7 @@
 # blenderTracking
 Refine tracking solution
 
-When solving for camera motion, narrowing down solve error by hand may be a realy frustrating task. 
+When solving for camera motion, narrowing down solve error by hand may be a really frustrating task. 
 Setting track weight according reprojection error solve this issue for camera motion tracking.
 Here is a script to automatically set weight of all tracks according error in a single click.
 
